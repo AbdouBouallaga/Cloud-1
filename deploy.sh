@@ -16,6 +16,7 @@ function run {
     then
         sleep 5
         run
+    else
+        sudo docker-compose up
     fi
-    sudo docker-compose up
 }
