@@ -7,8 +7,8 @@ then
     sudo sh get-docker.sh
     echo ""
     sleep 15
-    cp ./update.sh /
-    printf "\n@reboot /update.sh\n" > /etc/crontab
+    sudo cp ./update.sh /
+    sudo printf "\n@reboot /update.sh\n" > /etc/crontab
 fi
 
 function run {
