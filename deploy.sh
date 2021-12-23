@@ -25,5 +25,5 @@ then
 	run
 else
 	echo "docker already installed"
-	run()
+	run
 fi
