@@ -14,9 +14,10 @@ fi
 function run {
     if ! docker info 2>/dev/null
     then
+        echo "docker not ready waiting 5s"
         sleep 5
-        run
+        run()
     else
-        sudo docker-compose up
+        sudo docker-compose up &
     fi
 }
