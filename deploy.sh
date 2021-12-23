@@ -1,7 +1,7 @@
 #!/bin/bash
 
 function run {
-	if ! docker info 2>/dev/null
+	if ! sudo docker info 2>/dev/null
 	then
 		echo "docker not ready waiting 5s"
 		sleep 5
