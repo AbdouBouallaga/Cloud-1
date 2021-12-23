@@ -1,7 +1,7 @@
 #!/bin/bash
 
 function run {
-	if ! sudo docker info 2>/dev/null
+	if ! docker info 2>/dev/null
 	then
 		echo "docker not ready waiting 5s"
 		sleep 5
@@ -11,7 +11,7 @@ function run {
 	fi
 }
 
-if ! command -v sudo docker &> /dev/null
+if ! command -v docker &> /dev/null
 then
 	echo "docker could not be found. installing Docker"
 	sudo apt-get update
