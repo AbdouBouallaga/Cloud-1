@@ -18,8 +18,7 @@ then
 	sudo apt-get install -y curl
 	curl -fsSL get.docker.com -o get-docker.sh
 	sudo sh get-docker.sh
-	echo ""
-	sleep 15
+    sudo apt install docker-compose
 	sudo cp ./update.sh /
 	sudo printf "\n@reboot /update.sh\n" > /etc/crontab
 	run
