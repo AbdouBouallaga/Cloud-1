@@ -20,7 +20,9 @@ then
 	sudo sh get-docker.sh
     sudo apt install -y docker-compose
 	sudo cp ./update.sh /
-	sudo printf "\n@reboot /update.sh\n" > /etc/crontab
+    sudo chmod 666 /etc/crontab
+	sudo printf "\n@reboot /update.sh\n" >> /etc/crontab
+    sudo chmod 664 /etc/crontab
 	run
 else
 	echo "docker already installed"
