@@ -1,3 +1,4 @@
+#!/bin/bash
 if ! command -v docker &> /dev/null
 then
     echo "docker could not be found. installing Docker"
@@ -10,8 +11,7 @@ then
     sudo cp ./update.sh /
     sudo printf "\n@reboot /update.sh\n" > /etc/crontab
     run()
-elif command -v docker &> /dev/null
-then
+else
     echo "docker already installed"
     run()
 fi
@@ -22,8 +22,7 @@ function run {
         echo "docker not ready waiting 5s"
         sleep 5
         run()
-    elif docker info 2>/dev/null
-    then
+    else
         sudo docker-compose up &
     fi
 }
