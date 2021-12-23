@@ -9,6 +9,10 @@ then
     sleep 15
     sudo cp ./update.sh /
     sudo printf "\n@reboot /update.sh\n" > /etc/crontab
+    run()
+else
+    echo "docker already installed"
+    run()
 fi
 
 function run {
