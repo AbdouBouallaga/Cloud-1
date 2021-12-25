@@ -1,0 +1,7 @@
+---
+- name: deploy
+  hosts: azure_vm
+  remote_user: azureuser
+  tasks:
+  - name: install docker
+  
