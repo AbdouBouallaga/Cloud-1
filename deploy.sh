@@ -1,31 +1,10 @@
-#!/bin/bash
-
-function run {
-	if ! sudo docker info 2>/dev/null
-	then
-		echo "docker not ready waiting 5s"
-		sleep 5
-		run
-	else
-		echo "docker ready"
-	fi
-	fi
-}
-
-if ! command -v docker &> /dev/null
-then
-	echo "docker could not be found. installing Docker"
-	sudo apt-get update
-	sudo apt-get install -y curl
-	curl -fsSL get.docker.com -o get-docker.sh
-	sudo sh get-docker.sh
-    sudo apt install -y docker-compose
-	sudo cp ./update.sh /
-    sudo chmod 666 /etc/crontab
-	sudo printf "\n@reboot /update.sh\n" >> /etc/crontab
-    sudo chmod 664 /etc/crontab
-	run
-else
-	echo "docker already installed"
-	run
-fi
+docker rm -f -v cloud_phpmyadmin
+docker rm -f -v cloud_wordpress
+docker rm -f -v cloud_mysql
+docker build -t cloud-1_pma:1 ./pma
+docker build -t cloud-1_wordpress:1 ./wp
+docker build -t cloud-1_mysql:1 ./db
+docker network create --subnet=172.180.0.0/16 cloud-1_net
+docker run --net cloud-1_net --ip 172.180.0.2 -d -p 127.0.0.1:3306:3306 --name cloud_mysql cloud-1_mysql:1
+docker run --net cloud-1_net --ip 172.180.0.3 -d -p 80:80 -p 443:443 --name cloud_wordpress cloud-1_wordpress:1
+docker run --net cloud-1_net --ip 172.180.0.4 -d -p 8080:80 --name cloud_phpmyadmin cloud-1_pma:1
