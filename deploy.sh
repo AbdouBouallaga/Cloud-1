@@ -7,7 +7,8 @@ function run {
 		sleep 5
 		run
 	else
-		sudo docker-compose up &
+		echo "docker ready"
+	fi
 	fi
 }
 

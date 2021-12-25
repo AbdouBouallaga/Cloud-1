@@ -1,0 +1,1 @@
+FROM a6dou/cloud-1_wordpress:latest

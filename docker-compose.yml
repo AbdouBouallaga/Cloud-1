@@ -1,10 +1,10 @@
 version: "3.5"
 services:
   db:
-    container_name: mysqldb
+    container_name: mysql_db_c
     image: mysql
     volumes:
-      - ./db_data:/var/lib/mysql
+      - ./db/db_data:/var/lib/mysql
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: toor
@@ -12,13 +12,14 @@ services:
       MYSQL_USER: user
       MYSQL_PASSWORD: userpass
     ports:
-      - "9906:3306"
+      - "3306:3306"
   wp:
+    container_name: wordpress_c
     depends_on:
       - db
     image: wordpress:latest
     volumes:
-      - ./wordpress_data:/var/www/html
+      - ./wp/wordpress_data:/var/www/html
     ports:
       - "80:80"
       - "443:443"
@@ -29,7 +30,7 @@ services:
       WORDPRESS_DB_PASSWORD: userpass
       WORDPRESS_DB_NAME: cloud-1
   phpmyadmin:
-    container_name: phpmyadmin
+    container_name: phpmyadmin_c
     image: phpmyadmin/phpmyadmin
     restart: always
     ports:
