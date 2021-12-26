@@ -1,0 +1,80 @@
+---
+  - name: deploy
+    hosts: azure_vm
+    remote_user: azureuser
+    become: yes
+    tasks:
+    - name: apt update
+      apt:
+        update_cache: yes
+    - name: apt install python {{inventory_hostname}}
+      apt:
+        name: python
+        state: latest
+    - name: install curl
+      apt:
+        name: curl
+        state: latest
+
+    - name: curl get.docker.com 
+      command: curl -fsSL get.docker.com -o get-docker.sh
+
+    - name: install docker
+      command: sudo sh get-docker.sh
+
+    - name: cleanup get-docker.sh
+      command: rm get-docker.sh
+    - name: cleanup previous cloud-1_mysql
+      command: docker rm -f -v cloud-1_mysql
+    - name: cleanup previous cloud-1_wordpress
+      command: docker rm -f -v cloud-1_wordpress
+    - name: cleanup previous cloud-1_phpmyadmin
+      command: docker rm -f -v cloud-1_phpmyadmin
+    - name: cleanup network
+      command: sudo docker network rm cloud-1_net
+      ignore_errors: yes
+
+    # - name: Create cloud-1_net network with IPv4
+    #   community.docker.docker_network:
+    #     name: cloud-1_net
+    #     ipam_config:
+    #       - subnet: 172.180.0.0/16
+
+    - name: Create cloud-1_net network with IPv4
+      command: docker network create --subnet=172.180.0.0/16 cloud-1_net
+    - name: deploy cloud-1_mysql docker container
+      command: docker run --net cloud-1_net --ip 172.180.0.2 -d --name cloud-1_mysql a6dou/cloud-1_mysql:latest
+    - name: deploy cloud-1_phpmyadmin docker container
+      command: docker run --net cloud-1_net --ip 172.180.0.4 -d -p 8080:80 --name cloud-1_phpmyadmin a6dou/cloud-1_phpmyadmin:latest
+    - name: change site ip in db
+      command: docker exec cloud-1_mysql mysql -u root -ptoor cloud-1 -e "UPDATE wp_options SET option_value = 'http://{{inventory_hostname}}' WHERE wp_options.option_id = 1 AND wp_options.option_id = 2;";
+    - name: deploy cloud-1_wordpress docker container
+      command: docker run --net cloud-1_net --ip 172.180.0.3 -d -p 80:80 -p 443:443 --name cloud-1_wordpress a6dou/cloud-1_wordpress:latest
+    # - name: deploy cloud-1_mysql docker container
+    #   docker_container:
+    #     image: a6dou/cloud-1_mysql:latest
+    #     name: cloud_mysql
+    #     network:
+    #       - name: cloud-1_net
+    #         ipv4_address: 172.180.0.2
+
+    # - name: deploy cloud-1_wordpress docker container
+    #   docker_container:
+    #     image: a6dou/cloud-1_wordpress:latest
+    #     name: cloud_wordpress
+    #     network:
+    #       - name: cloud-1_net
+    #         ipv4_address: 172.180.0.3
+    #     ports:
+    #       - "80:80"
+    #       - "443:443"
+          
+    # - name: deploy cloud-1_phpmyadmin docker container
+    #   docker_container:
+    #     image: a6dou/cloud-1_phpmyadmin:latest
+    #     name: cloud_phpmyadmin
+    #     network:
+    #       - name: cloud-1_net
+    #         ipv4_address: 172.180.0.4
+    #     ports:
+    #       - "8080:80"
