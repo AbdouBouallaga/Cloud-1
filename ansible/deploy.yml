@@ -17,13 +17,13 @@
     - name: Create cloud-1_net network with IPv4
       command: docker network create --subnet=172.180.0.0/16 cloud-1_net
     - name: deploy cloud-1_mysql docker container
-      command: docker run --net cloud-1_net --ip 172.180.0.2 -d --name cloud-1_mysql a6dou/cloud-1_mysql:latest
+      command: docker run --net cloud-1_net --ip 172.180.0.2 -d --name cloud-1_mysql --restart=always a6dou/cloud-1_mysql:latest
     - name: deploy cloud-1_phpmyadmin docker container
-      command: docker run --net cloud-1_net --ip 172.180.0.4 -d -p 8080:80 --name cloud-1_phpmyadmin a6dou/cloud-1_phpmyadmin:latest
+      command: docker run --net cloud-1_net --ip 172.180.0.4 -d -p 8080:80 --name cloud-1_phpmyadmin --restart=always a6dou/cloud-1_phpmyadmin:latest
     - name: change site ip in db
       command: docker exec cloud-1_mysql mysql -u root -ptoor cloud-1 -e "UPDATE wp_options SET option_value = 'http://{{inventory_hostname}}' WHERE wp_options.option_id = 1; UPDATE wp_options SET option_value = 'http://{{inventory_hostname}}' WHERE wp_options.option_id = 2;";
     - name: deploy cloud-1_wordpress docker container
-      command: docker run --net cloud-1_net --ip 172.180.0.3 -d -p 80:80 -p 443:443 --name cloud-1_wordpress a6dou/cloud-1_wordpress:latest
+      command: docker run --net cloud-1_net --ip 172.180.0.3 -d -p 80:80 -p 443:443 --name cloud-1_wordpress --restart=always a6dou/cloud-1_wordpress:latest
     - name: adapt wordpress to the new ip
       command: "{{item}}"
       with_items:
