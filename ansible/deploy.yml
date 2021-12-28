@@ -5,39 +5,33 @@
     become: yes
     tasks:
 
-
-    # - name: Create cloud-1_net network with IPv4
-    #   community.docker.docker_network:
-    #     name: cloud-1_net
-    #     ipam_config:
-    #       - subnet: 172.180.0.0/16
-
-    # - name: cleanup previous cloud-1_mysql
-    #   command: docker rm -f -v cloud-1_mysql
-    # - name: cleanup previous cloud-1_wordpress
-    #   command: docker rm -f -v cloud-1_wordpress
-    # - name: cleanup previous cloud-1_phpmyadmin
-    #   command: docker rm -f -v cloud-1_phpmyadmin
-    # - name: cleanup network
-    #   command: sudo docker network rm cloud-1_net
-    # - name: Create cloud-1_net network with IPv4
-    #   command: docker network create --subnet=172.180.0.0/16 cloud-1_net
-    # - name: deploy cloud-1_mysql docker container
-    #   command: docker run --net cloud-1_net --ip 172.180.0.2 -d --name cloud-1_mysql a6dou/cloud-1_mysql:latest
-    # - name: deploy cloud-1_phpmyadmin docker container
-    #   command: docker run --net cloud-1_net --ip 172.180.0.4 -d -p 8080:80 --name cloud-1_phpmyadmin a6dou/cloud-1_phpmyadmin:latest
-    # - name: change site ip in db
-    #   command: docker exec cloud-1_mysql mysql -u root -ptoor cloud-1 -e "UPDATE wp_options SET option_value = 'http://{{inventory_hostname}}' WHERE wp_options.option_id = 1; UPDATE wp_options SET option_value = 'http://{{inventory_hostname}}' WHERE wp_options.option_id = 2;";
-    # - name: deploy cloud-1_wordpress docker container
-    #   command: docker run --net cloud-1_net --ip 172.180.0.3 -d -p 80:80 -p 443:443 --name cloud-1_wordpress a6dou/cloud-1_wordpress:latest
+    - name: cleanup previous cloud-1_mysql
+      command: docker rm -f -v cloud-1_mysql
+    - name: cleanup previous cloud-1_wordpress
+      command: docker rm -f -v cloud-1_wordpress
+    - name: cleanup previous cloud-1_phpmyadmin
+      command: docker rm -f -v cloud-1_phpmyadmin
+    - name: cleanup network
+      command: sudo docker network rm cloud-1_net
+      ignore_errors: yes
+    - name: Create cloud-1_net network with IPv4
+      command: docker network create --subnet=172.180.0.0/16 cloud-1_net
+    - name: deploy cloud-1_mysql docker container
+      command: docker run --net cloud-1_net --ip 172.180.0.2 -d --name cloud-1_mysql a6dou/cloud-1_mysql:latest
+    - name: deploy cloud-1_phpmyadmin docker container
+      command: docker run --net cloud-1_net --ip 172.180.0.4 -d -p 8080:80 --name cloud-1_phpmyadmin a6dou/cloud-1_phpmyadmin:latest
+    - name: change site ip in db
+      command: docker exec cloud-1_mysql mysql -u root -ptoor cloud-1 -e "UPDATE wp_options SET option_value = 'http://{{inventory_hostname}}' WHERE wp_options.option_id = 1; UPDATE wp_options SET option_value = 'http://{{inventory_hostname}}' WHERE wp_options.option_id = 2;";
+    - name: deploy cloud-1_wordpress docker container
+      command: docker run --net cloud-1_net --ip 172.180.0.3 -d -p 80:80 -p 443:443 --name cloud-1_wordpress a6dou/cloud-1_wordpress:latest
     - name: adapt wordpress to the new ip
-      command: docker exec cloud-1_wordpress curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar
-    - name: adapt wordpress to the new ip
-      command: docker exec cloud-1_wordpress export  pubip={{inventory_hostname}}
-    - name: adapt wordpress to the new ip
-      command: docker exec cloud-1_wordpress chmod +x wp-cli.phar && mv wp-cli.phar /usr/local/bin/wp 
-    - name: adapt wordpress to the new ip
-      command: docker exec cloud-1_wordpress wp search-replace 'http://localhost' http://$pubip --precise --recurse-objects --all-tables
+      command: "{{item}}"
+      with_items:
+        - docker exec cloud-1_wordpress curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar
+        - docker exec cloud-1_wordpress /bin/sh -c "export pubip={{inventory_hostname}}"
+        - docker exec cloud-1_wordpress /bin/sh -c "chmod +x wp-cli.phar"
+        - docker exec cloud-1_wordpress /bin/sh -c "mv wp-cli.phar /usr/local/bin/wp"
+        - docker exec cloud-1_wordpress /bin/sh -c "wp search-replace http://localhost http://{{inventory_hostname}} --precise --recurse-objects --all-tables --allow-root"
 
     # - name: deploy cloud-1_mysql docker container
     #   docker_container:
