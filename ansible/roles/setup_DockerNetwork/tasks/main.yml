@@ -1,0 +1,7 @@
+---
+# tasks file for setup_DockerNetwork
+- name: Create cloud-1_net Docker network
+  community.docker.docker_network:
+    name: cloud-1_net
+    ipam_config:
+      - subnet: 172.180.0.0/16

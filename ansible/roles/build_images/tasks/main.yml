@@ -1,0 +1,25 @@
+---
+# tasks file for build_images
+- name: build phpmyadmin image
+  docker_image:
+    name: cloud-1_pma:1
+    build:
+      path: /root/Dockerfiles/pma
+    state: present
+    source: build
+
+- name: build wordpress image
+  docker_image:
+    name: cloud-1_wordpress:1
+    build:
+      path: /root/Dockerfiles/wp
+    state: present
+    source: build
+
+- name: build mysql image
+  docker_image:
+    name: cloud-1_mysql:1
+    build:
+      path: /root/Dockerfiles/db
+    state: present
+    source: build

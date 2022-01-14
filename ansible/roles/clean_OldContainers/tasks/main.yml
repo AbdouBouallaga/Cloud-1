@@ -1,0 +1,14 @@
+---
+# tasks file for clean_OldContainers
+- name: cleanup previous cloud-1_mysql
+  command: docker rm -f -v cloud-1_mysql
+
+- name: cleanup previous cloud-1_wordpress
+  command: docker rm -f -v cloud-1_wordpress
+
+- name: cleanup previous cloud-1_phpmyadmin
+  command: docker rm -f -v cloud-1_phpmyadmin
+
+- name: cleanup network
+  command: sudo docker network rm cloud-1_net
+  ignore_errors: yes

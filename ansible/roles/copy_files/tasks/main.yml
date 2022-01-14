@@ -1,0 +1,18 @@
+---
+# tasks file for copy_files
+- name: copy Dockerfiles directory
+  copy:
+    src: Dockerfiles
+    dest: /root
+    directory_mode: yes
+    owner: root
+    group: root
+    mode: '0644'
+- name: copy volumes backup
+  copy:
+    src: backup
+    dest: /root
+    directory_mode: yes
+    owner: root
+    group: root
+    mode: '0644'

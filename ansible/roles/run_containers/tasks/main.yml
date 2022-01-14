@@ -1,0 +1,50 @@
+---
+# tasks file for run_containers
+- name: Create mysql container
+  community.docker.docker_container:
+    name: cloud-1_mysql
+    image: cloud-1_mysql:1
+    detach: yes
+    restart_policy: always
+    state: started
+    volumes:
+      - wp_db:/var/lib/mysql
+    networks:
+      - name: cloud-1_net
+        ipv4_address: "172.180.0.2"
+    ports:
+      - "127.0.0.1:3306:3306"
+
+- name: Create phpmyadmin container
+  community.docker.docker_container:
+    name: cloud-1_phpmyadmin
+    image: cloud-1_pma:1
+    detach: yes
+    restart_policy: always
+    state: started
+    networks:
+      - name: cloud-1_net
+        ipv4_address: "172.180.0.4"
+    ports:
+      - "8080:80"
+
+- name: change site ip in db
+  community.docker.docker_container_exec:
+    container: cloud-1_mysql
+    command: mysql -u root -ptoor cloud-1 -e "UPDATE wp_options SET option_value = 'http://{{inventory_hostname}}' WHERE wp_options.option_id = 1; UPDATE wp_options SET option_value = 'http://{{inventory_hostname}}' WHERE wp_options.option_id = 2;";
+
+- name: Create wordpress container
+  community.docker.docker_container:
+    name: cloud-1_wordpress
+    image: cloud-1_wordpress:1
+    detach: yes
+    restart_policy: always
+    state: started
+    volumes:
+      - wp_site:/var/www/html
+    networks:
+      - name: cloud-1_net
+        ipv4_address: "172.180.0.3"
+    ports:
+      - "80:80"
+      - "443:443"

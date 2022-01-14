@@ -1,0 +1,15 @@
+---
+# tasks file for restore_AppVolumes
+- name: Create a volume for the database(wp_db)
+  docker_volume:
+    name: wp_db
+
+- name: Create a volume for wordpress(wp_site)
+  docker_volume:
+    name: wp_site
+
+- name: restore database to wp_db volume
+  command: docker run --rm -v wp_db:/recover -v /root/backup:/backup ubuntu bash -c "cd /recover && tar xvf /backup/wp-db.tar"
+
+- name: restore wordpress data to wp_site volume
+  command: docker run --rm -v wp_site:/recover -v /root/backup:/backup ubuntu bash -c "cd /recover && tar xvf /backup/wp-site.tar"

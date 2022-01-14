@@ -19,6 +19,6 @@ docker run --net cloud-1_net --ip 172.180.0.4 -d -p 8080:80 --name cloud_phpmyad
 # restore
 # docker volume create wp_db
 # docker volume create wp_site
-# docker run --rm -v wp_db:/recover -v /Users/babdelka/Desktop/Cloud-1/ansible/backup:/backup ubuntu bash -c "cd /recover && tar xvf /backup/wp-db.tar"
-# docker run --rm -v wp_site:/recover -v /Users/babdelka/Desktop/Cloud-1/ansible/backup:/backup ubuntu bash -c "cd /recover && tar xvf /backup/wp-site.tar"
+# docker run --rm -v wp_db:/recover -v /Users/babdelka/Desktop/Cloud-1/ansible/roles/copy_files/files/backup:/backup ubuntu bash -c "cd /recover && tar xvf /backup/wp-db.tar"
+# docker run --rm -v wp_site:/recover -v /Users/babdelka/Desktop/Cloud-1/ansible/roles/copy_files/files/backup:/backup ubuntu bash -c "cd /recover && tar xvf /backup/wp-site.tar"
 
