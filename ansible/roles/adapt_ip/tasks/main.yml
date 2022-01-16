@@ -1,34 +1,5 @@
 # ---
 # # tasks file for adapt_ip
-# - name: adapt wordpress to the new ip 
-#   community.docker.docker_container_exec:
-#     container: cloud-1_wordpress
-#     command: curl --silent -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar
-#     chdir: /root/
-
-# - name: adapt wordpress to the new ip
-#   community.docker.docker_container_exec:
-#     container: cloud-1_wordpress
-#     command: /bin/sh -c "export pubip={{inventory_hostname}}"
-#     chdir: /root/
-
-# - name: adapt wordpress to the new ip
-#   community.docker.docker_container_exec:
-#     container: cloud-1_wordpress
-#     command: /bin/sh -c "chmod +x wp-cli.phar"
-#     chdir: /root/
-
-# - name: adapt wordpress to the new ip
-#   community.docker.docker_container_exec:
-#     container: cloud-1_wordpress
-#     command: /bin/sh -c "mv wp-cli.phar /usr/local/bin/wp"
-#     chdir: /root/
-
-# - name: adapt wordpress to the new ip
-#   community.docker.docker_container_exec:
-#     container: cloud-1_wordpress
-#     command: /usr/local/bin/wp search-replace http://127.0.0.1 http://{{inventory_hostname}} --precise --recurse-objects --all-tables --allow-root
-#     chdir: /root/
 - name: adapt wordpress to the new ip
   command: "{{item}}"
   with_items:
@@ -37,3 +8,5 @@
     - docker exec cloud-1_wordpress /bin/sh -c "chmod +x wp-cli.phar"
     - docker exec cloud-1_wordpress /bin/sh -c "mv wp-cli.phar /usr/local/bin/wp"
     - docker exec cloud-1_wordpress /bin/sh -c "wp search-replace http://127.0.0.1 http://{{inventory_hostname}} --precise --recurse-objects --all-tables --allow-root"
+  tags:
+    - adapt_ip

@@ -1,14 +1,34 @@
 ---
 # tasks file for clean_OldContainers
-- name: cleanup previous cloud-1_mysql
-  command: docker rm -f -v cloud-1_mysql
+- name: remove container cloud-1_mysql
+  docker_container:
+    name: cloud-1_mysql
+    state: absent
+  tags:
+    - stop_all
+    - stop_mysql
+    - restart_mysql
 
-- name: cleanup previous cloud-1_wordpress
-  command: docker rm -f -v cloud-1_wordpress
+- name: remove container cloud-1_wordpress
+  docker_container:
+    name: cloud-1_wordpress
+    state: absent
+  tags:
+    - stop_all
+    - stop_wp
+    - restart_wp
 
-- name: cleanup previous cloud-1_phpmyadmin
-  command: docker rm -f -v cloud-1_phpmyadmin
+- name: remove container cloud-1_phpmyadmin
+  docker_container:
+    name: cloud-1_phpmyadmin
+    state: absent
+  tags:
+    - stop_all
+    - stop_pma
+    - restart_pma
 
-- name: cleanup network
-  command: sudo docker network rm cloud-1_net
-  ignore_errors: yes
+- name: Delete network cloud-1_net
+  docker_network:
+    name: cloud-1_net
+    state: absent
+    force: yes

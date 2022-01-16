@@ -14,6 +14,9 @@
         ipv4_address: "172.180.0.2"
     ports:
       - "127.0.0.1:3306:3306"
+  tags:
+    - run_all
+    - restart_mysql
 
 - name: Create phpmyadmin container
   community.docker.docker_container:
@@ -27,11 +30,16 @@
         ipv4_address: "172.180.0.4"
     ports:
       - "8080:80"
+  tags:
+    - run_all
+    - restart_pma
 
 - name: change site ip in db
   community.docker.docker_container_exec:
     container: cloud-1_mysql
     command: mysql -u root -ptoor cloud-1 -e "UPDATE wp_options SET option_value = 'http://{{inventory_hostname}}' WHERE wp_options.option_id = 1; UPDATE wp_options SET option_value = 'http://{{inventory_hostname}}' WHERE wp_options.option_id = 2;";
+  tags:
+    - adapt_ip
 
 - name: Create wordpress container
   community.docker.docker_container:
@@ -48,3 +56,6 @@
     ports:
       - "80:80"
       - "443:443"
+  tags:
+    - run_all
+    - restart_wp

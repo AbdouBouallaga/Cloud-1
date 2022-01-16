@@ -1,3 +1,4 @@
 [azure_vm]
-20.79.201.186
-51.124.255.95
+20.105.201.116 ansible_ssh_private_key_file=/goinfre/babdelka/cloud1-vm1_key.pem
+# 20.123.177.108 ansible_ssh_private_key_file=/goinfre/babdelka/cloud1-vm2_key.pem
+# 137.116.192.205 ansible_ssh_private_key_file=/goinfre/babdelka/cloud1-vm3_key.pem
